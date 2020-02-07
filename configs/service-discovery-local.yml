@@ -1,0 +1,7 @@
+eureka:
+  instance:
+    hostname: localhost
+
+logging:
+  level:
+    org.springframework.web: debug
