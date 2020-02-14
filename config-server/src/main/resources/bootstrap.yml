@@ -8,5 +8,15 @@ spring:
           uri: https://github.com/nomad-coder/handson
           search-paths:
             - configs
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
 server:
   port: 8888
