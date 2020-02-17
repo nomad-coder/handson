@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/handsondb/account;AUTO_SERVER=TRUE   # 여러 Application 이 같은 서버를 바라볼 수 있다!
+    url: jdbc:h2:~/handsondb/account;AUTO_SERVER=TRUE   # 여러 Application 들이 같은 DB서버를 바라볼 수 있다! (단 항상 켜져있어서 필요할 때 리셋해줘야함. 써버 끌때 파일 지우는 거 구현하면 해결될듯)
     username: sa
     password: sa
   jpa:
