@@ -37,7 +37,6 @@ class RootConfig {
 
 	@PreDestroy
 	fun onDestroy() {
-		println("죽는다 죽어")
 		DeleteDbFiles.execute("~/handsondb", "account", true)
 	}
 

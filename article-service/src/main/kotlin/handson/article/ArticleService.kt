@@ -1,11 +1,14 @@
 package handson.article
 
 import net.bytebuddy.utility.RandomString
+import org.h2.tools.DeleteDbFiles
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.patchForObject
 import java.util.*
+import javax.annotation.PreDestroy
 import javax.persistence.*
 
 
@@ -28,6 +32,17 @@ class ArticleService
 
 fun main(args: Array<String>) {
 	runApplication<ArticleService>(*args)
+}
+
+@Profile("local")
+@Configuration
+class RootConfig {
+
+	@PreDestroy
+	fun onDestroy() {
+		DeleteDbFiles.execute("~/handsondb", "account", true)
+	}
+
 }
 
 @RestController
