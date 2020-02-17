@@ -1,21 +1,10 @@
-server:
-  port: 8761
 eureka:
   instance:
-    hostname: msa.josh.nomad-cloud.io
-    prefer-ip-address: true #서비스간 통신 시 hostname 보다 ip 를 우선 사용 함
-  client: #eureka server 가 여러대일때, peer 관계에 있는 eureka server 의 서비스 목록을 가져오기 위하여 자신이 서버이자 클라이언트가 되어 클라이언트를 이용하여 가져온다. 하지만 지금은 stand alone 이므로 클라이언트들과 동일한 동작이 계속 시도되지 않도록 false 로 함
-    register-with-eureka: false #자기 자신을 eureka 서버에 등록할 지 여부 (Standalone 으로 구성하면 false, 여러로 구성하여 Peering 하려면 true 로 설정하여 서로 Sync 를 맞춘다.)
-    fetch-registry: false       #마이크로 서비스 인스턴스 목록을 로컬에 캐시할 것인지 여부
+    hostname: mmssaa.cloudrium.io
+  client:
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
       default-zone: http://${eureka.instance.hostname}:${server.port}/eureka
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: info,health,refresh
-
-logging:
-  level:
-    org.springframework.web: info
+server:
+  port: 8761
