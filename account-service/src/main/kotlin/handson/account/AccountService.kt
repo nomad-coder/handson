@@ -41,7 +41,7 @@ class TestController(
 }
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/")
 class AccountController(
 	private val repo: AccountRepository
 ) {
