@@ -34,6 +34,7 @@ fun main(args: Array<String>) {
 	runApplication<ArticleService>(*args)
 }
 
+//지워도 되고 안 지워도 된다. 이건 선택
 @Profile("local")
 @Configuration
 class RootConfig {
