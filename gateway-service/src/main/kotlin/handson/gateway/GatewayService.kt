@@ -10,6 +10,9 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+/**
+ * endpoint 가 다시 갱신될 때까지 오류가 날 수 있다. 이중화가 필수!!!!!!!!!
+ */
 @EnableZuulProxy
 @EnableEurekaClient
 @SpringBootApplication
