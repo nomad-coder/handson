@@ -1,18 +1,22 @@
 package handson.account
 
 import net.bytebuddy.utility.RandomString
+import org.h2.tools.DeleteDbFiles
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.context.config.annotation.RefreshScope
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.validation.BindException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import javax.annotation.PreDestroy
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
@@ -25,6 +29,18 @@ class AccountService
 
 fun main(args: Array<String>) {
 	runApplication<AccountService>(*args)
+}
+
+@Profile("local")
+@Configuration
+class RootConfig {
+
+	@PreDestroy
+	fun onDestroy() {
+		println("죽는다 죽어")
+		DeleteDbFiles.execute("~/handsondb", "account", true)
+	}
+
 }
 
 @RefreshScope
