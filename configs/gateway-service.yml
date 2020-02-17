@@ -1,0 +1,42 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8081
+eureka:
+  client:
+    service-url:
+      default-zone: http://DEFAULT-ZONE/eureka
+  instance:
+    prefer-ip-address: true #서비스간 통신 시 hostname 보다 ip 를 우선 사용 함
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}} #Discovery Server 에 등록될 때 instance id 가 고유하지 않으면 덮어씌워지므로, 실행되는 instance 마다 고유한 이름을 갖도록 설정
+
+zuul:
+  host:
+    connect-timeout-millis: 5000
+    socket-timeout-millis: 5000
+  ignored-services: '*'   # routes에 정의되지 않은 모든 요청은 무시 함
+  sensitive-headers: '*'  # header의 모든 정보를 bypass 함
+  routes:
+    account-service:
+      path: /accounts/**
+      serviceId: account-service
+      stripPrefix: true
+    article-service:
+      path: /articles/**
+      serviceId: article-service
+      stripPrefix: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,refresh
+
+logging:
+  level:
+    org.springframework.web: info

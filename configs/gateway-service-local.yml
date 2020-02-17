@@ -1,0 +1,15 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://172.21.1.170:8761/eureka
+
+logging:
+  level:
+    org.springframework.web: debug
