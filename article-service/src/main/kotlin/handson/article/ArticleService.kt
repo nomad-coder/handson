@@ -7,9 +7,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
+import org.springframework.http.ResponseEntity
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.patchForObject
+import java.net.URI
 import java.util.*
 import javax.persistence.*
+
 
 @EnableEurekaClient
 @SpringBootApplication
@@ -17,6 +29,28 @@ class ArticleService
 
 fun main(args: Array<String>) {
 	runApplication<ArticleService>(*args)
+}
+
+@RestController
+@RequestMapping("/articles")
+class AccountController(
+	private val repo: ArticleRepository
+) {
+
+	@PostMapping
+	fun create(@RequestBody article: Article): ResponseEntity<Article> {
+		repo.save(article)
+		val rel = linkTo(AccountController::class.java).slash(article.id).withSelfRel()
+		this.sendArticleCount(article.author.id)
+		return ResponseEntity.created(rel.toUri()).body(article)
+	}
+
+	private fun sendArticleCount(authorId: String) {
+		val count = repo.countByAuthor(authorId)
+		RestTemplate(HttpComponentsClientHttpRequestFactory())	//patch 가 안되서 이거해야함
+			.patchForObject<String>("http://localhost:8081/accounts/$authorId/article-count", mapOf("articleCount" to count))
+	}
+
 }
 
 @Entity
@@ -55,7 +89,27 @@ class Author(
 
 	val name: String = "Anonymous"
 
-)
+) {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as Author
+
+		if (id != other.id) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		return id.hashCode()
+	}
+}
 
 @RepositoryRestResource //articles 안해도 기본으로 articles 로 되네. 어떻게 복수형으로 바꿨지 신기하네
-interface ArticleRepository : JpaRepository<Article, String>
+interface ArticleRepository : JpaRepository<Article, String> {
+
+	@Query("select count(a) from Article a where a.author.id = :authorId")
+	fun countByAuthor(authorId: String): Int
+
+}

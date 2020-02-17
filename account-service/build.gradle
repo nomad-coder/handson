@@ -8,6 +8,8 @@ dependencies {
 
     compile 'com.h2database:h2'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.11' //PATCH, DELETE 등 Invalid Method 들을 사용하기 위해 넣어야함.
+//    implementation 'io.github.openfeign:feign-httpclient:10.4.0'        //PATCH, DELETE 등 Invalid Method 들을 사용하기 위해 넣어야함.
 
 }
 

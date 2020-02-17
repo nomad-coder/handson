@@ -68,6 +68,19 @@ class AccountController(
 			}
 	}
 
+	@PatchMapping("/{id}/article-count")
+	fun patchArticleCount(@PathVariable id: String,
+				  @Validated(value = [ValidationGroups.ArticleCount::class]) @RequestBody account: Account, bindingResult: BindingResult) {
+		if (bindingResult.hasErrors()) {
+			throw BindException(bindingResult)
+		}
+		repo.findById(id)
+			.ifPresent {
+				val a = it.copy(articleCount = account.articleCount)
+				repo.save(a)
+			}
+	}
+
 	@DeleteMapping("/{id}")
 	fun delete(@PathVariable id: String) = repo.deleteById(id)
 
@@ -101,5 +114,7 @@ data class Account(
 object ValidationGroups {
 
 	interface UpdateName : Default
+
+	interface ArticleCount : Default
 
 }
