@@ -1,0 +1,41 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:msa-article
+    username: sa
+    password: sa
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+      ddl-auto: validate
+    properties:
+      hibernate.format_sql: true
+      hibernate.enable_lazy_load_no_trans: true
+  flyway:
+    locations: ["classpath:db/migration"]
+
+server:
+  port: 0
+eureka:
+  client:
+    service-url:
+      default-zone: http://DEFAULT-ZONE/eureka
+  instance:
+    prefer-ip-address: true #서비스간 통신 시 hostname 보다 ip 를 우선 사용 함
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}} #Discovery Server 에 등록될 때 instance id 가 고유하지 않으면 덮어씌워지므로, 실행되는 instance 마다 고유한 이름을 갖도록 설정
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,refresh
+
+logging:
+  level:
+    org.springframework.web: debug

@@ -1,7 +1,12 @@
 spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/handsondb/account;AUTO_SERVER=TRUE   # 여러 Application 이 같은 서버를 바라볼 수 있다!
+    url: jdbc:h2:~/handsondb/article;AUTO_SERVER=TRUE
     username: sa
     password: sa
   jpa:
@@ -9,8 +14,6 @@ spring:
   flyway:
     locations: ["classpath:db/migration", "classpath:db/sample-data"]
 
-server:
-  port: 0
 eureka:
   client:
     service-url:
