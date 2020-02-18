@@ -27,7 +27,6 @@ import java.util.*
 import javax.annotation.PreDestroy
 import javax.persistence.*
 
-
 @EnableEurekaClient
 @SpringBootApplication
 class ArticleService
@@ -39,12 +38,17 @@ fun main(args: Array<String>) {
 //지워도 되고 안 지워도 된다. 이건 선택
 @Profile("local")
 @Configuration
-class RootConfig {
+class LocalConfig {
 
 	@PreDestroy
 	fun onDestroy() {
 		DeleteDbFiles.execute("~/handsondb", "account", true)
 	}
+
+}
+
+@Configuration
+class RootConfig {
 
 	@Bean
 	@LoadBalanced	//이놈이 없으면 application-name 으로 통신 안된다. 아님 직접 게이트웨이에 요청하는 방법도.
