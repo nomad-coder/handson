@@ -6,7 +6,9 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
@@ -44,12 +46,19 @@ class RootConfig {
 		DeleteDbFiles.execute("~/handsondb", "account", true)
 	}
 
+	@Bean
+	@LoadBalanced	//이놈이 없으면 application-name 으로 통신 안된다. 아님 직접 게이트웨이에 요청하는 방법도.
+	fun restTemplate(): RestTemplate {
+		return RestTemplate(HttpComponentsClientHttpRequestFactory())
+	}
+
 }
 
 @RestController
 @RequestMapping("/articles")
 class AccountController(
-	private val repo: ArticleRepository
+	private val repo: ArticleRepository,
+	private val rest: RestTemplate
 ) {
 
 	@PostMapping
@@ -62,8 +71,7 @@ class AccountController(
 
 	private fun sendArticleCount(authorId: String) {
 		val count = repo.countByAuthor(authorId)
-		RestTemplate(HttpComponentsClientHttpRequestFactory())	//patch 가 안되서 이거해야함
-			.patchForObject<String>("http://localhost:8081/accounts/$authorId/article-count", mapOf("articleCount" to count))
+		rest.patchForObject<String>("http://account-service/$authorId/article-count", mapOf("articleCount" to count), String::class)
 	}
 
 }

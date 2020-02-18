@@ -11,6 +11,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
@@ -85,7 +86,7 @@ class AccountController(
 
 	@PatchMapping("/{id}/article-count")
 	fun patchArticleCount(@PathVariable id: String,
-				  @Validated(value = [ValidationGroups.ArticleCount::class]) @RequestBody account: Account, bindingResult: BindingResult) {
+				  @Validated(value = [ValidationGroups.ArticleCount::class]) @RequestBody account: Account, bindingResult: BindingResult): ResponseEntity<String> {
 		if (bindingResult.hasErrors()) {
 			throw BindException(bindingResult)
 		}
@@ -94,6 +95,7 @@ class AccountController(
 				val a = it.copy(articleCount = account.articleCount)
 				repo.save(a)
 			}
+		return ResponseEntity.ok(account.articleCount.toString())
 	}
 
 	@DeleteMapping("/{id}")
