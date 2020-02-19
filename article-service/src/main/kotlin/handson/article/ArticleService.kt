@@ -110,7 +110,7 @@ data class Article(
 )
 
 @Embeddable
-class Author(
+class Author (
 
 	val id: String = "Unknown",
 
