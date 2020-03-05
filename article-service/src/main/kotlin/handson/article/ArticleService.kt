@@ -60,7 +60,7 @@ class RootConfig {
 
 @RestController
 @RequestMapping("/articles")
-class AccountController(
+class ArticleController(
 	private val repo: ArticleRepository,
 	private val rest: RestTemplate
 ) {
@@ -68,7 +68,7 @@ class AccountController(
 	@PostMapping
 	fun create(@RequestBody article: Article): ResponseEntity<Article> {
 		repo.save(article)
-		val rel = linkTo(AccountController::class.java).slash(article.id).withSelfRel()
+		val rel = linkTo(ArticleController::class.java).slash(article.id).withSelfRel()
 		this.sendArticleCount(article.author.id)
 		return ResponseEntity.created(rel.toUri()).body(article)
 	}
